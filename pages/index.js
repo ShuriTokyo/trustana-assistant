@@ -69,18 +69,44 @@ export default function Home() {
     setStarted(true);
     const next = [...messages, { role: "user", content: text }];
     setMessages(next);
+
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messages: next, question: text, session: isNewSession }),
       });
-      const data = await res.json();
-      setMessages([...next, { role: "assistant", content: data.reply }]);
-      setIsNewSession(false);
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let reply = "";
+
+      // Add empty assistant message to stream into
+      setMessages([...next, { role: "assistant", content: "" }]);
+      setLoading(false);
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        const chunk = decoder.decode(value, { stream: true });
+        const lines = chunk.split("\n");
+        for (const line of lines) {
+          if (!line.startsWith("data: ")) continue;
+          try {
+            const parsed = JSON.parse(line.slice(6));
+            if (parsed.token) {
+              reply += parsed.token;
+              const captured = reply;
+              setMessages([...next, { role: "assistant", content: captured }]);
+            }
+            if (parsed.done) {
+              setIsNewSession(false);
+            }
+          } catch {}
+        }
+      }
     } catch {
       setMessages([...next, { role: "assistant", content: "Something went wrong — please try again." }]);
-    } finally {
       setLoading(false);
     }
   };
