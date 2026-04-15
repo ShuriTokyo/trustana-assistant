@@ -1,6 +1,31 @@
 import { useState, useRef, useEffect } from "react";
 import Head from "next/head";
 
+function renderMarkdown(text) {
+  let html = text
+    // Escape HTML first
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    // Bold
+    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+    // Italic
+    .replace(/\*(.+?)\*/g, "<em>$1</em>")
+    // Headers (### ## #)
+    .replace(/^### (.+)$/gm, '<span style="font-weight:600;font-size:13.5px;color:#0A1628;display:block;margin:12px 0 4px">$1</span>')
+    .replace(/^## (.+)$/gm, '<span style="font-weight:600;font-size:14px;color:#0A1628;display:block;margin:14px 0 4px">$1</span>')
+    .replace(/^# (.+)$/gm, '<span style="font-weight:600;font-size:15px;color:#0A1628;display:block;margin:14px 0 6px">$1</span>')
+    // Bullet lists — group consecutive lines starting with - or *
+    .replace(/^[-•] (.+)$/gm, '<li>$1</li>')
+    // Wrap consecutive <li> items in <ul>
+    .replace(/(<li>.*<\/li>\n?)+/g, (match) => `<ul style="margin:6px 0 6px 16px;display:flex;flex-direction:column;gap:4px">${match}</ul>`)
+    // Horizontal rule
+    .replace(/^━+$/gm, '<hr style="border:none;border-top:1px solid #D8E0EC;margin:10px 0">')
+    // Line breaks — double newline = paragraph gap
+    .replace(/\n\n/g, '<div style="height:8px"></div>')
+    // Single newline
+    .replace(/\n/g, "<br>");
+  return html;
+}
+
 const CHIPS = [
   "What does Trustana's platform do?",
   "How does the AI Native Product Catalog work?",
@@ -156,7 +181,10 @@ export default function Home() {
           {messages.map((m, i) => (
             <div key={i} className={`msg ${m.role}`}>
               <div className="msg-label">{m.role === "assistant" ? "Trustana" : "You"}</div>
-              <div className="bubble">{m.content}</div>
+              {m.role === "assistant"
+                ? <div className="bubble" dangerouslySetInnerHTML={{ __html: renderMarkdown(m.content) }} />
+                : <div className="bubble">{m.content}</div>
+              }
             </div>
           ))}
           {loading && (
