@@ -41,12 +41,14 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [started, setStarted] = useState(false);
   const [isNewSession, setIsNewSession] = useState(true);
-  const endRef = useRef(null);
   const textareaRef = useRef(null);
 
-  useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, loading]);
+  const lastUserMsgRef = useRef(null);
+
+  // Only scroll to show the start of the new assistant response, not the bottom
+  const scrollToResponse = () => {
+    lastUserMsgRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   const autoResize = () => {
     const el = textareaRef.current;
@@ -70,6 +72,9 @@ export default function Home() {
     const next = [...messages, { role: "user", content: text }];
     setMessages(next);
 
+    // Scroll to show the user message and start of response
+    setTimeout(() => scrollToResponse(), 50);
+
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
@@ -81,7 +86,6 @@ export default function Home() {
       const decoder = new TextDecoder();
       let reply = "";
 
-      // Add empty assistant message to stream into
       setMessages([...next, { role: "assistant", content: "" }]);
       setLoading(false);
 
@@ -97,6 +101,7 @@ export default function Home() {
             if (parsed.token) {
               reply += parsed.token;
               const captured = reply;
+              // Update content but don't auto-scroll — user controls
               setMessages([...next, { role: "assistant", content: captured }]);
             }
             if (parsed.done) {
@@ -205,7 +210,9 @@ export default function Home() {
 
         <div className="msgs-wrap">
           {messages.map((m, i) => (
-            <div key={i} className={`msg ${m.role}`}>
+            <div key={i} className={`msg ${m.role}`}
+              ref={m.role === "user" && i === messages.length - 1 ? lastUserMsgRef : null}
+            >
               <div className="msg-label">{m.role === "assistant" ? "Trustana" : "You"}</div>
               {m.role === "assistant"
                 ? <div className="bubble" dangerouslySetInnerHTML={{ __html: renderMarkdown(m.content) }} />
@@ -223,7 +230,6 @@ export default function Home() {
               </div>
             </div>
           )}
-          <div ref={endRef} />
         </div>
 
         <div className="input-area">
