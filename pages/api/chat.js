@@ -7,20 +7,22 @@ async function logToSheets(question, response, session) {
     await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        question,
-        response,
-        session,
-        timestamp: new Date().toISOString(),
-      }),
+      body: JSON.stringify({ question, response, session, timestamp: new Date().toISOString() }),
     });
   } catch (e) {}
 }
+
+export const config = { api: { bodyParser: true } };
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end();
   const { messages, question, session } = req.body;
   if (!messages) return res.status(400).json({ error: 'Missing messages' });
+
+  // Set up SSE streaming headers
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
 
   try {
     const apiResponse = await fetch('https://api.anthropic.com/v1/messages', {
@@ -33,20 +35,46 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
         max_tokens: 1024,
+        stream: true,
         system: SYSTEM_PROMPT,
         messages,
       }),
     });
-    const data = await apiResponse.json();
-    if (!apiResponse.ok) return res.status(apiResponse.status).json({ error: data });
 
-    const reply = data.content[0].text;
+    let fullReply = '';
 
-    // Log after we have the response — fire and forget
-    if (question) logToSheets(question, reply, session ?? true);
+    const reader = apiResponse.body.getReader();
+    const decoder = new TextDecoder();
 
-    return res.status(200).json({ reply });
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      const chunk = decoder.decode(value, { stream: true });
+      const lines = chunk.split('\n');
+
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        const data = line.slice(6).trim();
+        if (data === '[DONE]') continue;
+        try {
+          const parsed = JSON.parse(data);
+          if (parsed.type === 'content_block_delta' && parsed.delta?.type === 'text_delta') {
+            const token = parsed.delta.text;
+            fullReply += token;
+            res.write(`data: ${JSON.stringify({ token })}\n\n`);
+          }
+        } catch {}
+      }
+    }
+
+    // Log after stream completes
+    if (question) logToSheets(question, fullReply, session ?? true);
+
+    res.write(`data: ${JSON.stringify({ done: true })}\n\n`);
+    res.end();
   } catch (err) {
-    return res.status(500).json({ error: 'Server error' });
+    res.write(`data: ${JSON.stringify({ error: 'Server error' })}\n\n`);
+    res.end();
   }
 }
