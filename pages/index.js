@@ -3,24 +3,20 @@ import Head from "next/head";
 
 function renderMarkdown(text) {
   let html = text
-    // Escape HTML first
     .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
-    // Bold
     .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
-    // Italic
-    .replace(/\*(.+?)\*/g, "<em>$1</em>")
-    // Headers (### ## #)
-    .replace(/^### (.+)$/gm, '<span style="font-weight:600;font-size:13.5px;color:#0A1628;display:block;margin:12px 0 4px">$1</span>')
-    .replace(/^## (.+)$/gm, '<span style="font-weight:600;font-size:14px;color:#0A1628;display:block;margin:14px 0 4px">$1</span>')
-    .replace(/^# (.+)$/gm, '<span style="font-weight:600;font-size:15px;color:#0A1628;display:block;margin:14px 0 6px">$1</span>')
-    // Bullet lists — group consecutive lines starting with - or *
+    .replace(/\*([^*]+?)\*/g, "<em>$1</em>")
+    // Headers
+    .replace(/^### (.+)$/gm, '<span style="font-weight:600;font-size:13px;color:#0A1628;display:block;margin:10px 0 2px">$1</span>')
+    .replace(/^## (.+)$/gm, '<span style="font-weight:600;font-size:13.5px;color:#0A1628;display:block;margin:12px 0 2px">$1</span>')
+    .replace(/^# (.+)$/gm, '<span style="font-weight:600;font-size:14px;color:#0A1628;display:block;margin:12px 0 2px">$1</span>')
+    // Bullets — convert then wrap, stripping newlines between <li> items so <br> doesn't get injected
     .replace(/^[-•] (.+)$/gm, '<li>$1</li>')
-    // Wrap consecutive <li> items in <ul>
-    .replace(/(<li>.*<\/li>\n?)+/g, (match) => `<ul style="margin:6px 0 6px 16px;display:flex;flex-direction:column;gap:4px">${match}</ul>`)
-    // Horizontal rule
-    .replace(/^━+$/gm, '<hr style="border:none;border-top:1px solid #D8E0EC;margin:10px 0">')
-    // Line breaks — double newline = paragraph gap
-    .replace(/\n\n/g, '<div style="height:8px"></div>')
+    .replace(/(<li>.*?<\/li>\n*)+/g, m => `<ul style="margin:4px 0 6px 16px;line-height:1.6">${m.replace(/\n/g, '')}</ul>`)
+    // HR
+    .replace(/^━+$/gm, '<hr style="border:none;border-top:1px solid #D8E0EC;margin:8px 0">')
+    // Paragraph gap (double newline)
+    .replace(/\n\n/g, '<div style="height:6px"></div>')
     // Single newline
     .replace(/\n/g, "<br>");
   return html;
