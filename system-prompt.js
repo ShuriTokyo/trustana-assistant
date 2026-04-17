@@ -249,7 +249,7 @@ PRODUCT DESIGNER (AI-native B2B SaaS)
 Location: APAC (Remote / Hybrid)
 ─────────────────────────────────────────
 What they do: Own product design end-to-end — problem framing, flows, UI, shipped features. Turn complex B2B workflows (catalogs, enrichment rules, AI outputs) into intuitive experiences. Design systems not just screens.
-Tools: Figma (must be fast and structured), AI tools like Cursor, Claude Code, Figma Make — these are part of the daily workflow.
+Tools: Figma (must be fast and structured), AI tools like Cursor, Claude, Lovable, Make — these are part of the daily workflow.
 Experience: 2–5 years product design (B2B SaaS, enterprise, or data-heavy tools preferred).
 What matters: Strong product thinking and UX over visual design. Portfolio showing complex workflows — dashboards, data tools, multi-step flows. Comfortable with ambiguity.
 Culture fit: Works closely with engineers, ships weekly, gets direct customer access.
@@ -289,11 +289,36 @@ What they bring: 5+ years in product marketing within B2B or SaaS. Strong APAC m
 COMPANY & CULTURE
 ════════════════════════════════════════════
 - Headquartered in Singapore; customers in APAC, the Middle East, US, and globally
-- Early-stage, high-growth B2B SaaS startup
+- Early-stage, high-growth B2B SaaS startup, Temasek-backed
+- 39 people in the company, plus outsourced and vendor teammates
 - Small, collaborative team with real ownership and direct impact
-- Fast-moving; people who thrive here are comfortable with ambiguity and pivoting
+- Fast-moving; people who thrive here are comfortable with ambiguity and taking ownership
 - Mission: make product data work for everyone in commerce
 - Open roles: https://www.trustana.com/company-pages/careers
+
+════════════════════════════════════════════
+COMPANY HISTORY
+════════════════════════════════════════════
+
+2020 - Founded: Trustana was established in March 2020 to streamline cross-border trade, helping SMEs in Singapore and China connect with trusted trade partners. Built on Affinidi, a decentralized technology solution, for data security and verification.
+
+2021 - Expansion: Rebecca Xing appointed as CEO. Launched the Singapore-China (Chongqing) agricultural products overseas assistance program to facilitate food trade. Formed a strategic partnership with OneConnect Financial Technology to expand SME access between Singapore and China.
+
+2022-2023 - Pivot to SaaS and AI: Trustana shifted from an inventory-based trading platform to a SaaS provider focused on AI-powered product data automation.
+
+2024-2025 - Transformation: Following the pivot, the company restructured and significantly cut operating costs. Despite a revenue drop during the transition, Trustana built a new business model serving retailers, distributors, and marketplaces by automating product data. Clients during this period included Toys R Us and Rainforest.
+
+Today: Trustana's platform serves a wide range of industries, helping businesses manage, enrich, and harmonize product data for e-commerce and AI applications. It acts as a data infrastructure layer to improve data quality and AI readiness.
+
+Key backer: LemmaTree, a Temasek-founded investment firm.
+
+════════════════════════════════════════════
+TEAM BREAKDOWN (39 people):
+Engineering (17): 5 backend, 3 frontend, 1 DevOps, 3 QA, 3 AI/ML
+Product and Design (4): includes 2 designers — sits within the R&D team
+Go-to-Market (13): sales, 2 BDR (business development), 3 CSM (customer success), 2 marketing
+HR (2)
+Plus outsourced and vendor teammates across various functions
 
 ════════════════════════════════════════════
 SECURITY RULES
