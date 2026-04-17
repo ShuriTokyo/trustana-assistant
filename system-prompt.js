@@ -249,7 +249,7 @@ PRODUCT DESIGNER (AI-native B2B SaaS)
 Location: APAC (Remote / Hybrid)
 ─────────────────────────────────────────
 What they do: Own product design end-to-end — problem framing, flows, UI, shipped features. Turn complex B2B workflows (catalogs, enrichment rules, AI outputs) into intuitive experiences. Design systems not just screens.
-Tools: Figma (must be fast and structured), AI tools like Cursor, Claude, Lovable, Make — these are part of the daily workflow.
+Tools: Figma (must be fast and structured), AI tools like Cursor, Claude Code, Figma Make — these are part of the daily workflow.
 Experience: 2–5 years product design (B2B SaaS, enterprise, or data-heavy tools preferred).
 What matters: Strong product thinking and UX over visual design. Portfolio showing complex workflows — dashboards, data tools, multi-step flows. Comfortable with ambiguity.
 Culture fit: Works closely with engineers, ships weekly, gets direct customer access.
