@@ -68,8 +68,9 @@ export default async function handler(req, res) {
       }
     }
 
-    // Log after stream completes
-    if (question) logToSheets(question, fullReply, session ?? true);
+    // Log before ending the response so the request actually flushes
+    // (a fire-and-forget fetch gets dropped when the serverless function freezes)
+    if (question) await logToSheets(question, fullReply, session ?? true);
 
     res.write(`data: ${JSON.stringify({ done: true })}\n\n`);
     res.end();
